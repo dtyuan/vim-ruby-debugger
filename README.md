@@ -2,6 +2,9 @@
 
 This Vim plugin implements interactive Ruby debugger in Vim.
 
+# Update #
+
+1. When VIM crashes, restart VIM but the breakpoints are out of sync, use ":RdbCommand delete" to clean up all existing breakpoints, then use ":call ruby_debugger#load_debugger() | call g:RubyDebugger.relink()" to relink with the backend debugger processes.  "\b" will work again.
 
 # Features #
 

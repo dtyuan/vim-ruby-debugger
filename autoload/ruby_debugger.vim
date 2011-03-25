@@ -455,6 +455,16 @@ function! RubyDebugger.stop() dict
   endif
 endfunction
 
+" DTY
+" Restart debugger only: useful after VIM crash
+function! RubyDebugger.relink() dict
+  echo "==== Calling relink()"
+  " start a new server
+  if !has_key(g:RubyDebugger, 'server')
+    let g:RubyDebugger.server = s:Server.new(s:hostname, s:rdebug_port, s:debugger_port, s:runtime_dir, s:tmp_file, s:server_output_file)
+    call g:RubyDebugger.server.relink()
+  endif
+endfunction
 
 " This function receives commands from the debugger. When ruby_debugger.rb
 " gets output from rdebug-ide, it writes it to the special file and 'kick'
@@ -1917,6 +1927,14 @@ function! s:Server.stop() dict
   let self.debugger_pid = ""
 endfunction
 
+" DTY
+" relink server processes
+function! s:Server.relink() dict
+  " Set PIDs of processes
+  let self.debugger_pid = self._get_pid(self.debugger_port, 1)
+  let self.rdebug_pid = self._get_pid(self.rdebug_port, 1)
+  call g:RubyDebugger.logger.put("=== Server relinked")
+endfunction
 
 " Return 1 if processes with set PID exist.
 function! s:Server.is_running() dict
